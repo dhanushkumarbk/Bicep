@@ -8,7 +8,7 @@ variables:
   serviceConnection: bicep
   resourceGroup: rg-monitoring
   location: centralindia
-  bicepFile: bicep/BHF_CIR_UAT.bicep
+  bicepFile: bicep/Alert-processing-rule.bicep
 
 steps:
 # 1️⃣ Clean checkout (MANDATORY for self-hosted agents)
@@ -58,3 +58,4 @@ steps:
           targetResourceType="microsoft.compute/virtualmachines" \
           actionRuleDescription="AMBA Notification Assets - Suppression Alert Processing Rule" \
           enabled=true
+
