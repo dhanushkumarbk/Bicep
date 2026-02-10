@@ -7,7 +7,7 @@ trigger:
       - bicep/*.bicep
 
 pool:
-  name: 'test'
+  name: 'default'
 
 variables:
   serviceConnection: 'bicep'  # ← Change this
