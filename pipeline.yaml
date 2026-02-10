@@ -7,39 +7,36 @@ trigger:
       - bicep/*.bicep
 
 pool:
-  name: 'default'
+  vmImage: ubuntu-latest
 
 variables:
-  serviceConnection: 'bicep'  # ← Change this
+  serviceConnection: 'bicep'
   subscriptionId: '28cee6ac-0512-49c5-b881-815835d8f377'
   resourceGroup: 'rg-monitoring'
   location: 'centralindia'
-  bicepFile: '$(Build.SourcesDirectory)/bicep/alert-rule.bicep'
+  bicepFile: '$(Build.SourcesDirectory)/bicep/BHF_CIR_PROD.bicep'
 
 steps:
-  - checkout: self
+- checkout: self
 
-  - task: AzureCLI@2
-    displayName: 'Create Resource Group'
-    inputs:
-      azureSubscription: $(serviceConnection)
-      scriptType: 'bash'
-      scriptLocation: 'inlineScript'
-      inlineScript: |
-        az group create --name $(resourceGroup) --location $(location)
+- task: AzureCLI@2
+  displayName: 'Create Resource Group'
+  inputs:
+    azureSubscription: $(serviceConnection)
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az group create --name $(resourceGroup) --location $(location)
 
-  - task: AzureResourceManagerTemplateDeployment@3
-    displayName: 'Deploy Bicep Template'
-    inputs:
-      azureResourceManagerConnection: $(serviceConnection)
-      subscriptionId: $(subscriptionId)
-      resourceGroupName: $(resourceGroup)
-      location: $(location)
-      csmFile: $(bicepFile)
-      overrideParameters: >
-        -actionRuleName "apr-AMBA-PROD"
-        -targetSubscriptionId "$(subscriptionId)"
-        -targetResourceGroupName "test1"
-        -targetResourceType "microsoft.compute/virtualmachines"
-        -enabled true
-      deploymentMode: 'Incremental'
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Deploy Bicep Template'
+  inputs:
+    deploymentScope: Resource Group
+    azureResourceManagerConnection: $(serviceConnection)
+    subscriptionId: $(subscriptionId)
+    action: Create Or Update Resource Group
+    resourceGroupName: $(resourceGroup)
+    location: $(location)
+    templateLocation: Linked artifact
+    csmFile: $(bicepFile)
+    deploymentMode: Incremental
