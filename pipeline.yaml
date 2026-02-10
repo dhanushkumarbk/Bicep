@@ -53,7 +53,7 @@ steps:
         --resource-group $(resourceGroup) \
         --template-file $(bicepFile) \
         --parameters \
-          actionRuleName="apr-AMBA-BHF-CIR-UAT-S002" \
+          actionRuleName="AMBA-ASP" \
           targetResourceGroupName="TEST1" \
           targetResourceType="microsoft.compute/virtualmachines" \
           description="AMBA Notification Assets - Suppression Alert Processing Rule" \
