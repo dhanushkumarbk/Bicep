@@ -53,10 +53,11 @@ steps:
         --resource-group $(resourceGroup) \
         --template-file $(bicepFile) \
         --parameters \
-          actionRuleName="apr-AMBA-BHF-CIR-UAT-S002" \
+          actionRuleName="Alert-suppresion" \
           targetResourceGroupName="rg-monitoring" \
           targetResourceType="microsoft.compute/virtualmachines" \
           actionRuleDescription="AMBA Notification Assets - Suppression Alert Processing Rule" \
           enabled=true
+
 
 
