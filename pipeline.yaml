@@ -1,43 +1,18 @@
-trigger:
-  branches:
-    include:
-      - main
-  paths:
-    include:
-      - bicep/*.bicep
-
-pool:
-  name: 'default'
-
-variables:
-  serviceConnection: 'bicep'
-  subscriptionId: '28cee6ac-0512-49c5-b881-815835d8f377'
-  resourceGroup: 'rg-monitoring'
-  location: 'centralindia'
-  bicepFile: 'bicep/BHF_CIR_UAT.bicep'
-
-steps:
-- checkout: self
-
 - task: AzureCLI@2
-  displayName: 'Create Resource Group'
+  displayName: Deploy Bicep via Azure CLI
   inputs:
     azureSubscription: $(serviceConnection)
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      az group create --name $(resourceGroup) --location $(location)
-
-- task: AzureResourceManagerTemplateDeployment@3
-  displayName: 'Deploy Bicep Template'
-  inputs:
-    deploymentScope: Resource Group
-    azureResourceManagerConnection: $(serviceConnection)
-    subscriptionId: $(subscriptionId)
-    action: Create Or Update Resource Group
-    resourceGroupName: $(resourceGroup)
-    location: $(location)
-    templateLocation: Linked artifact
-    csmFile: $(bicepFile)
-    deploymentMode: Incremental
-
+      az deployment group create \
+        --subscription $(subscriptionId) \
+        --resource-group $(resourceGroup) \
+        --template-file bicep/BHF_CIR_UAT.bicep \
+        --parameters \
+          actionRuleName="apr-AMBA-BHF-CIR-UAT-S002" \
+          targetSubscriptionId="$(subscriptionId)" \
+          targetResourceGroupName="UKS-UAT-RSG-CIR02" \
+          targetResourceType="microsoft.compute/virtualmachines" \
+          description="AMBA Notification Assets - Suppression Alert Processing Rule" \
+          enabled=true
