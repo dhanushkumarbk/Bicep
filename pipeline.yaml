@@ -7,7 +7,7 @@ trigger:
       - bicep/*.bicep
 
 pool:
-  vmImage: ubuntu-latest
+  name: 'default'
 
 variables:
   serviceConnection: 'bicep'
