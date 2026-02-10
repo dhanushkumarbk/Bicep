@@ -1,9 +1,20 @@
-param actionRuleName string = 'apr-AMBA-BHF-CIR-UAT-S002'  
-param targetSubscriptionId string = '711c9e0c-ccf8-4299-8310-68ef0c4c9985'  
-param targetResourceGroupName string = 'UKS-UAT-RSG-CIR02'  
-param targetResourceType string = 'microsoft.compute/virtualmachines'  
+@description('Action rule name')
+param actionRuleName string
+
+@description('Target subscription ID')
+param targetSubscriptionId string
+
+@description('Target resource group name')
+param targetResourceGroupName string
+
+@description('Target resource type')
+param targetResourceType string
+
+@description('Enable or disable action rule')
 param enabled bool = true
-param description string = 'AMBA Notification Assets - Suppression Alert Processing Rule for maintenance period'
+
+@description('Action rule description')
+param description string
 
 resource actionRule 'Microsoft.AlertsManagement/actionRules@2021-08-08' = {
   name: actionRuleName
