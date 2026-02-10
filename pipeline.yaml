@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  name: 'default'
+  name: 'default'   # self-hosted agent
 
 variables:
   serviceConnection: bicep
@@ -11,8 +11,19 @@ variables:
   bicepFile: bicep/BHF_CIR_UAT.bicep
 
 steps:
+# 1️⃣ Clean checkout (CRITICAL for self-hosted agents)
 - checkout: self
+  clean: true
 
+# 2️⃣ DEBUG – prove file exists (keep this until stable)
+- script: |
+    echo "Build Sources Directory:"
+    echo $(Build.SourcesDirectory)
+    echo "Repo contents:"
+    ls -R $(Build.SourcesDirectory)
+  displayName: DEBUG – list repo files
+
+# 3️⃣ Create RG (idempotent)
 - task: AzureCLI@2
   displayName: Create Resource Group (idempotent)
   inputs:
@@ -24,6 +35,7 @@ steps:
         --name $(resourceGroup) \
         --location $(location)
 
+# 4️⃣ Deploy Bicep (Action Rule)
 - task: AzureCLI@2
   displayName: Deploy Bicep (Action Rule)
   inputs:
@@ -31,6 +43,12 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
+      set -e
+      cd $(Build.SourcesDirectory)
+
+      echo "Deploying Bicep file:"
+      ls bicep
+
       az deployment group create \
         --resource-group $(resourceGroup) \
         --template-file $(bicepFile) \
