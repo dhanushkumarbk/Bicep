@@ -54,8 +54,9 @@ steps:
         --template-file $(bicepFile) \
         --parameters \
           actionRuleName="apr-AMBA-BHF-CIR-UAT-S002" \
-          targetResourceGroupName="TEST1" \
+          targetResourceGroupName="rg-monitoring" \
           targetResourceType="microsoft.compute/virtualmachines" \
           actionRuleDescription="AMBA Notification Assets - Suppression Alert Processing Rule" \
           enabled=true
+
 
