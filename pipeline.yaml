@@ -14,7 +14,7 @@ variables:
   subscriptionId: '28cee6ac-0512-49c5-b881-815835d8f377'
   resourceGroup: 'rg-monitoring'
   location: 'centralindia'
-  bicepFile: '$(Build.SourcesDirectory)/bicep/BHF_CIR_PROD.bicep'
+  bicepFile: 'bicep/BHF_CIR_PROD.bicep'
 
 steps:
 - checkout: self
