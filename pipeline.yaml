@@ -1,0 +1,45 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - bicep/*.bicep
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  serviceConnection: 'bicep'  # ← Change this
+  subscriptionId: '28cee6ac-0512-49c5-b881-815835d8f377'
+  resourceGroup: 'rg-monitoring'
+  location: 'centralindia'
+  bicepFile: '$(Build.SourcesDirectory)/bicep/alert-rule.bicep'
+
+steps:
+  - checkout: self
+
+  - task: AzureCLI@2
+    displayName: 'Create Resource Group'
+    inputs:
+      azureSubscription: $(serviceConnection)
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        az group create --name $(resourceGroup) --location $(location)
+
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: 'Deploy Bicep Template'
+    inputs:
+      azureResourceManagerConnection: $(serviceConnection)
+      subscriptionId: $(subscriptionId)
+      resourceGroupName: $(resourceGroup)
+      location: $(location)
+      csmFile: $(bicepFile)
+      overrideParameters: >
+        -actionRuleName "apr-AMBA-PROD"
+        -targetSubscriptionId "$(subscriptionId)"
+        -targetResourceGroupName "test1"
+        -targetResourceType "microsoft.compute/virtualmachines"
+        -enabled true
+      deploymentMode: 'Incremental'
